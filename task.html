@@ -1,1 +1,118 @@
- 
+  <!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Summarization Task</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <h1>Finish task to prior time</h1>
+    <center>
+        <img src="screenshot.jpg" alt="group" height="200" width="150">
+        <br>
+        <figure>
+            <img src="todo.jpg" alt="" height="300" width="250">
+            <figcaption>HTML carcass</figcaption>
+        </figure>
+    </center>
+    <div class="task-container">
+        <p id="original-text">[ ]</p>
+        <textarea id="summary" rows="10" cols="50" placeholder="Write all the HTML tags displayed on the code above"></textarea>
+        <button id="submit-btn">Submit</button>
+        <p id="timer">Time left: 5:00</p>
+        <p id="result"></p>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
+
+<style>
+    body {
+    font-family: Arial, sans-serif;
+}
+
+.task-container {
+    width: 80%;
+    margin: 40px auto;
+    padding: 20px;
+    border: 1px solid #ddd;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+#original-text {
+    font-size: 16px;
+    color: #666;
+}
+
+#summary {
+    font-size: 16px;
+    padding: 10px;
+}
+
+#submit-btn {
+    background-color: #4CAF50;
+    color: #fff;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+#timer {
+    font-size: 24px;
+    font-weight: bold;
+    color: red;
+}
+
+#result {
+    font-size: 24px;
+    font-weight: bold;
+    color: green;
+}
+</style>
+
+<script>
+    let originalText = `Write all the HTML tags displayed on the second image (HTML carcass): ... [start from snippet] ...`;
+let timeLeft = 300; // 5 minutes
+let timerInterval;
+
+document.getElementById("original-text").innerText = originalText;
+
+document.getElementById("submit-btn").addEventListener("click", sendToWhatsApp);
+
+function startTimer() {
+    timerInterval = setInterval(() => {
+        timeLeft--;
+        const minutes = Math.floor(timeLeft / 60);
+        const seconds = timeLeft % 60;
+        document.getElementById("timer").innerText = `Time left: ${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
+        if (timeLeft <= 0) {
+            clearInterval(timerInterval);
+            document.getElementById("result").innerText = "Time's up! Try again.";
+            document.getElementById("submit-btn").disabled = true;
+        }
+    }, 1000);
+}
+
+function sendToWhatsApp() {
+    const summaryText = document.getElementById("summary").value.trim();
+    if (summaryText.length >= 30 && timeLeft > 0) {
+        const phoneNumber = "2349064178174"; // Your WhatsApp number
+        const message = encodeURIComponent(`User Submission:\n\n${summaryText}`);
+        const whatsappURL = `https://wa.me/${phoneNumber}?text=${message}`;
+        
+        window.open(whatsappURL, "_blank");
+        
+        document.getElementById("result").innerText = "Submitted successfully!";
+        clearInterval(timerInterval);
+        document.getElementById("submit-btn").disabled = true;
+    } else {
+        document.getElementById("result").innerText = "Please write at least 30 characters.";
+    }
+}
+
+startTimer();
+</script>
